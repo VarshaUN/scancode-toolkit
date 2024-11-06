@@ -120,6 +120,7 @@ def parse_gomod(location):
     gomods = GoModule()
     require = []
     exclude = []
+    replace = []
 
     for i, line in enumerate(lines):
         line = preprocess(line)
@@ -157,6 +158,23 @@ def parse_gomod(location):
                         )
                     )
             continue
+        
+        if 'replace' in line and '(' in line:
+            for repl in lines[i + 1:]:
+                repl = preprocess(repl)
+                if ')' in repl:
+                    break
+                parsed_dep_link = parse_dep_link(repl)
+                ns_name = parsed_dep_link.group('ns_name')
+                namespace, _, name = ns_name.rpartition('/')
+                if parsed_dep_link:
+                    replace.append(GoModule(
+                            namespace=namespace,
+                            name=name,
+                            version=parsed_dep_link.group('version')
+                       )
+                    )
+            continue
 
         parsed_module_name = parse_module(line)
         if parsed_module_name:
@@ -186,8 +204,18 @@ def parse_gomod(location):
             )
             continue
 
+        if 'replace' in line:
+            replace.append(GoModule(
+                    namespace=namespace,
+                    name=name,
+                    version=parsed_module_name.group('version')
+                )
+            )
+            continue
+
     gomods.require = require
     gomods.exclude = exclude
+    gomods.replace = replace
 
     return gomods
 
@@ -253,3 +281,4 @@ def parse_gosum(location):
         gosums.append(dep)
 
     return gosums
+

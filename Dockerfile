@@ -9,6 +9,13 @@
 
 FROM --platform=linux/amd64 python:3.12-slim-bookworm
 
+# OCI Labels 
+LABEL org.opencontainers.image.title="ScanCode Toolkit" 
+LABEL org.opencontainers.image.description="ScanCode Toolkit for code scanning and analysis." 
+LABEL org.opencontainers.image.url="https://github.com/nexB/scancode-toolkit" 
+LABEL org.opencontainers.image.source="https://github.com/nexB/scancode-toolkit" 
+LABEL org.opencontainers.image.documentation="https://scancode-toolkit.readthedocs.io/"
+
 # Python settings: Force unbuffered stdout and stderr (i.e. they are flushed to terminal immediately)
 ENV PYTHONUNBUFFERED 1
 # Python settings: do not write pyc files

@@ -42,6 +42,7 @@ from packagedcode import rubygems
 from packagedcode import swift
 from packagedcode import win_pe
 from packagedcode import windows
+from packagedcode.luarocks import LuaRocksHandler
 
 if on_linux:
     from packagedcode import msi
@@ -213,6 +214,8 @@ APPLICATION_PACKAGE_DATAFILE_HANDLERS = [
 
     # These are handlers for deplock generated files
     pypi.PipInspectDeplockHandler,
+
+    LuaRocksHandler
 ]
 
 if on_linux:

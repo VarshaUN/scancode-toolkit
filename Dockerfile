@@ -15,6 +15,13 @@ LABEL org.opencontainers.image.description="ScanCode Toolkit for code scanning a
 LABEL org.opencontainers.image.url="https://github.com/nexB/scancode-toolkit" 
 LABEL org.opencontainers.image.source="https://github.com/nexB/scancode-toolkit" 
 LABEL org.opencontainers.image.documentation="https://scancode-toolkit.readthedocs.io/"
+LABEL org.opencontainers.image.created="${BUILD_DATE}"
+LABEL org.opencontainers.image.authors="https://github.com/nexB/scancode-toolkit"
+LABEL org.opencontainers.image.version="v32.3.0"
+LABEL org.opencontainers.image.vendor="nexB Inc."
+LABEL org.opencontainers.image.licenses="Apache-2.0"
+LABEL org.opencontainers.image.ref.name="latest"
+
 
 # Python settings: Force unbuffered stdout and stderr (i.e. they are flushed to terminal immediately)
 ENV PYTHONUNBUFFERED 1

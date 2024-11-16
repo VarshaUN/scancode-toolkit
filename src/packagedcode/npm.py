@@ -566,6 +566,17 @@ class NpmPackageJsonHandler(BaseNpmHandler):
             ('dist', dist_mapper),
         ]
 
+        hidden_lockfile = json_data.get('hiddenLockfile', False) 
+        dependencies = json_data.get('dependencies', {}) 
+        for dep_name, dep_data in dependencies.items(): 
+            if 'version' not in dep_data: 
+                if dep_data.get('bundled'): dep_data['type'] = 'bundled' 
+                if 'registry' in dep_data: dep_data['type'] = 'registry' 
+                if 'git' in dep_data: dep_data['type'] = 'git' 
+                if 'http' in dep_data: dep_data['type'] = 'http' 
+                if 'tarball' in dep_data: dep_data['type'] = 'tarball' 
+                if 'link' in dep_data: dep_data['type'] = 'link'
+
         extra_data = {}
         extra_data_fields = ['workspaces', 'engines', 'packageManager']
         for extra_data_field in extra_data_fields:
@@ -599,7 +610,7 @@ class NpmPackageJsonHandler(BaseNpmHandler):
             logger_debug(f'NpmPackageJsonHandler: parse: package: {package.to_dict()}')
 
         return package
-
+ 
     @classmethod
     def parse(cls, location, package_only=False):
         with io.open(location, encoding='utf-8') as loc:

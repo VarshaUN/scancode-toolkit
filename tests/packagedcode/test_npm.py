@@ -374,6 +374,19 @@ class TestNpm(PackageTester):
         packages = npm.YarnLockV1Handler.parse(test_file)
         self.check_packages_data(packages, expected_loc, regen=REGEN_TEST_FIXTURES)
 
+    def test_parse_hidden_lockfile(self):
+        test_file = self.get_test_loc('npm/package-lock-latest/package-lock.json')
+        expected_loc = self.get_test_loc('npm/package-lock-latest/package-lock.json-expected')
+        packages = npm.NpmPackageLockJsonHandler.parse(test_file)
+        self.check_packages_data(packages, expected_loc, regen=REGEN_TEST_FIXTURES)
+
+    def test_parse_non_versions(self):
+        test_file = self.get_test_loc('npm/package-lock-latest/package-lock.json')
+        expected_loc = self.get_test_loc('npm/package-lock-latest/package-lock.json-expected')
+        packages = npm.NpmPackageLockJsonHandler.parse(test_file)
+        self.check_packages_data(packages, expected_loc, regen=REGEN_TEST_FIXTURES)
+
+    
     def test_is_datafile_pnpm_shrinkwrap_yaml(self):
         test_file = self.get_test_loc('npm/pnpm/shrinkwrap/v3/vuepack/shrinkwrap.yaml')
         assert npm.PnpmShrinkwrapYamlHandler.is_datafile(test_file)

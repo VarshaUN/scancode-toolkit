@@ -1,0 +1,32 @@
+[
+    {
+        "datasource_id": "pypi_pyproject_toml",
+        "type": "pypi",
+        "primary_language": "Python",
+        "name": "titanic_ml",
+        "version": "0.1.0",
+        "extracted_license_statement": null,
+        "description": "titanic_ml example package",
+        "keywords": [],
+        "parties": [
+            {
+                "type": "author",
+                "name": "Niels Zeilemaker",
+                "email": "nielszeilemaker@xebia.com"
+            }
+        ],
+        "dependencies": [
+            {
+                "dependency": "pyspark[ml]",
+                "version": ""
+            },
+            {
+                "dependency": "sklearn",
+                "version": ""
+            }
+        ],
+        "is_private": true,
+        "extra_data": {},
+        "urls": {}
+    }
+]

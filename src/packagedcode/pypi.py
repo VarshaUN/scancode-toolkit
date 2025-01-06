@@ -517,6 +517,10 @@ class PyprojectTomlHandler(BaseExtractedPythonLayout):
         if license_file:
             extra_data['license_file'] = license_file
 
+        classifiers = project_data.get('classifiers', []) 
+        is_private = any('Private ::' in classifier for classifier in classifiers) 
+        cls.is_private=is_private
+
         dependencies = []
         parsed_dependencies = get_requires_dependencies(
             requires=project_data.get("dependencies", []),
@@ -542,6 +546,7 @@ class PyprojectTomlHandler(BaseExtractedPythonLayout):
             keywords=get_keywords(project_data),
             parties=get_pyproject_toml_parties(project_data),
             dependencies=dependencies,
+            is_private=is_private,
             extra_data=extra_data,
             **urls,
         )

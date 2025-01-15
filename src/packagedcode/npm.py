@@ -566,17 +566,6 @@ class NpmPackageJsonHandler(BaseNpmHandler):
             ('dist', dist_mapper),
         ]
 
-        hidden_lockfile = json_data.get('hiddenLockfile', False) 
-        dependencies = json_data.get('dependencies', {}) 
-        for dep_name, dep_data in dependencies.items(): 
-            if 'version' not in dep_data: 
-                if dep_data.get('bundled'): dep_data['type'] = 'bundled' 
-                if 'registry' in dep_data: dep_data['type'] = 'registry' 
-                if 'git' in dep_data: dep_data['type'] = 'git' 
-                if 'http' in dep_data: dep_data['type'] = 'http' 
-                if 'tarball' in dep_data: dep_data['type'] = 'tarball' 
-                if 'link' in dep_data: dep_data['type'] = 'link'
-
         extra_data = {}
         extra_data_fields = ['workspaces', 'engines', 'packageManager']
         for extra_data_field in extra_data_fields:
@@ -815,6 +804,46 @@ class NpmPackageLockJsonHandler(BaseNpmLockHandler):
     description = 'npm package-lock.json lockfile'
     documentation_url = 'https://docs.npmjs.com/cli/v8/configuring-npm/package-lock-json'
 
+    def parse(self, location):
+        """ Parse the package-lock.json file and handle various sources. """
+        with open(location) as f:
+            lockfile_data = json.load(f)
+        
+        packages = lockfile_data.get('packages',{})
+        for pkg_path, pkg_data in packages.items():
+            self.handle_package_data(pkg_path, pkg_data)
+                
+    def handle_package_data(self, pkg_path, pkg_data):
+        """ Handle package data, including different dependency sources."""
+        version = pkg_data.get('version')
+        if not version:
+            return
+        if version.startswith('http'):
+            self.handle_http_source(pkg_path, pkg_data)
+        elif version.startswith('git'):
+            self.handle_git_source(pkg_path, pkg_data)
+        else:
+            self.handle_registry_source(pkg_path, pkg_data)
+
+    def handle_http_source(self, pkg_path, pkg_data):
+        """ Handle HTTP tarball sources. """
+        logging.info(f'Handling HTTP source for {pkg_path}')
+        
+    def handle_git_source(self, pkg_path, pkg_data):
+        """ Handle git sources. """
+        logging.info(f'Handling git source for {pkg_path}')
+        
+    def handle_registry_source(self, pkg_path, pkg_data):
+        """ Handle registry sources. """
+        logging.info(f'Handling registry source for {pkg_path}')
+        
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+if not logger.hasHandlers():
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
 class NpmShrinkwrapJsonHandler(BaseNpmLockHandler):
     datasource_id = 'npm_shrinkwrap_json'

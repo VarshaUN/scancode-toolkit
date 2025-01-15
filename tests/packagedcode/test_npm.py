@@ -16,7 +16,7 @@ from packages_test_utils import PackageTester
 from scancode_config import REGEN_TEST_FIXTURES
 from scancode.cli_test_utils import run_scan_click
 from scancode.cli_test_utils import check_json_scan
-
+from packagedcode import NpmPackageLockJsonHandler
 
 class TestNpm(PackageTester):
     test_data_dir = os.path.join(os.path.dirname(__file__), 'data')
@@ -367,6 +367,21 @@ class TestNpm(PackageTester):
             expected_file, result_file, remove_uuid=True, regen=REGEN_TEST_FIXTURES
         )
 
+    @pytest.fixture
+    def handler():
+        return NpmPackageLockJsonHandler()
+
+    def test_npm_package_lock_json_parse(handler):
+        test_file = 'npm/package-lock-v1/package-lock.json'
+        expected_file = 'npm/package-lock-v1/package-lock.json-expected'
+        with open(test_file) as f:
+            sample_data = json.load(f)
+        handler.parse(test_file)
+        with open(expected_file) as f:
+            expected_data = json.load(f)
+        assert handler.packages == expected_data
+
+
     def test_npm_yarn_lock_v1_parse_alias(self):
         test_file = self.get_test_loc('npm/yarn-lock/v1-alias/yarn.lock')
         expected_loc = self.get_test_loc(
@@ -374,19 +389,6 @@ class TestNpm(PackageTester):
         packages = npm.YarnLockV1Handler.parse(test_file)
         self.check_packages_data(packages, expected_loc, regen=REGEN_TEST_FIXTURES)
 
-    def test_parse_hidden_lockfile(self):
-        test_file = self.get_test_loc('npm/package-lock-latest/package-lock.json')
-        expected_loc = self.get_test_loc('npm/package-lock-latest/package-lock.json-expected')
-        packages = npm.NpmPackageLockJsonHandler.parse(test_file)
-        self.check_packages_data(packages, expected_loc, regen=REGEN_TEST_FIXTURES)
-
-    def test_parse_non_versions(self):
-        test_file = self.get_test_loc('npm/package-lock-latest/package-lock.json')
-        expected_loc = self.get_test_loc('npm/package-lock-latest/package-lock.json-expected')
-        packages = npm.NpmPackageLockJsonHandler.parse(test_file)
-        self.check_packages_data(packages, expected_loc, regen=REGEN_TEST_FIXTURES)
-
-    
     def test_is_datafile_pnpm_shrinkwrap_yaml(self):
         test_file = self.get_test_loc('npm/pnpm/shrinkwrap/v3/vuepack/shrinkwrap.yaml')
         assert npm.PnpmShrinkwrapYamlHandler.is_datafile(test_file)

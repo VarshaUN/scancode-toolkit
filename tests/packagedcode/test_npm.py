@@ -16,7 +16,7 @@ from packages_test_utils import PackageTester
 from scancode_config import REGEN_TEST_FIXTURES
 from scancode.cli_test_utils import run_scan_click
 from scancode.cli_test_utils import check_json_scan
-from packagedcode import NpmPackageLockJsonHandler
+from src.packagedcode.npm import NpmPackageLockJsonHandler
 
 class TestNpm(PackageTester):
     test_data_dir = os.path.join(os.path.dirname(__file__), 'data')
